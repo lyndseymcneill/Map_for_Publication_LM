@@ -33,7 +33,7 @@ library(tmap)
 library(mapview) 
 library(here) # to set working directories
 library(grid)
-library(shiny)
+library(shiny)  
 
 
 
@@ -66,6 +66,7 @@ st_crs(aus) <- "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"
 
 # get extent from Australia map --
 wa.ext <- raster::drawExtent()
+# drawExtent() is useful for manually drawing an extent, could be very useful later
 #extent(xmin = 112.2425, xmax = 118.1279 , ymin =-35.4557, ymax = -21.54461)
 
 # crop extent --
@@ -92,6 +93,7 @@ sp_sites <- st_as_sf(x = sites,
                   coords = c("longitude", "latitude"),
                   crs = "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0")
 
+# add to current plot to check and make sure st_as_sf() worked correctly 
 plot(sp_sites, add=T)
 
 
@@ -162,7 +164,7 @@ wa_map <- tm_shape(wa) + tm_polygons(border.col = "black", lwd = 2) +
   tm_shape(ri_region) + # for the red box showing where Rottnest Island is
   tm_borders(col = "red", lwd = 3) +
   tm_layout(bg.color = "transparent",  frame = F,
-            title = "WA", title.size = 10, title.color = "black", title.position = c(0.29, 0.70)) 
+            title = "WA", title.size = 3, title.color = "black", title.position = c(0.29, 0.70)) 
 
 
 wa_map
@@ -192,7 +194,9 @@ a_map
 #### 7.1. check how it looks ----
 rotto_map
 
+#print() adds new feature on top of existing map. here we specify where the new feature is placed  
 print(wa_map, vp = viewport(x = 0.93, y = 0.43, w = 0.26, h = 0.26))
+# create viewport for saving the maps together later on 
 vp1 = viewport(x = 0.94, y = 0.44, w = 0.25, h= 0.25)
 
 print(a_map, vp = viewport(x = 0.90, y = 0.63, w = 0.15, h= 0.15))
@@ -201,9 +205,11 @@ vp2 = viewport(x = 0.90, y = 0.63, w = 0.15, h= 0.15)
 
 
 #### 7.2. save the map with insets ----
-tmap_save(rotto_map, filename = paste(p.dir, "Rotto_map_Anita-test1.png", sep ='/'), dpi = 300, 
+#tmap_save() is used to save a map output 
+tmap_save(rotto_map, filename = paste(p.dir, "Rotto_map_Conner-test1.png", sep ='/'), dpi = 300, 
           height = 5.5, width = 5, units = "in",
-          insets_tm = list(wa_map,a_map),  
+          insets_tm = list(wa_map,a_map), 
+          # here we use the view ports created earlier 
           insets_vp = list(vp1, vp2))
 
 
